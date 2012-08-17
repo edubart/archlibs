@@ -1,0 +1,9 @@
+*.tgz
+*.zip
+*.bz2
+*.tar
+*.xz
+*.gz
+*.lzma
+libs
+.directory
