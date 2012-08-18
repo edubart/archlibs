@@ -16,10 +16,19 @@ md5sums=('3d8b86c21a2f87a2a5e60f78f3b3f03d'
          '4ad924b32ec6b45f0e34ac39984859f3')
 
 build() {
-  cd $srcdir/openal-soft-$pkgver/build
+  cd $srcdir/openal-soft-$pkgver
 
   unset LDFLAGS
 
+  rm -rf build && mkdir build && cd build
+  cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchain.cmake \
+        -DCMAKE_INSTALL_PREFIX=/usr/i486-mingw32 .. \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DEXAMPLES=OFF
+  make
+
+  cd ..
+  rm -rf build2 && mkdir build2 && cd build2
   cmake -DCMAKE_TOOLCHAIN_FILE=../../toolchain.cmake \
         -DCMAKE_INSTALL_PREFIX=/usr/i486-mingw32 .. \
         -DCMAKE_BUILD_TYPE=Release \
@@ -29,7 +38,9 @@ build() {
 }
 
 package() {
-  cd $srcdir/openal-soft-$pkgver/build
+  cd $srcdir/openal-soft-$pkgver
 
-  make DESTDIR=${pkgdir} install
+  make -C build DESTDIR=${pkgdir} install
+  make -C build2 DESTDIR=${pkgdir} install
+  rm -rf $pkgdir/usr/i486-mingw32/bin/*.exe
 }

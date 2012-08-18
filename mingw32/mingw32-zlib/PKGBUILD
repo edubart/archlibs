@@ -35,7 +35,7 @@ build() {
   install -d "$pkgdir/usr/i486-mingw32/"{bin,include,lib}
   install -m644 -t "$pkgdir/usr/i486-mingw32/include" zlib.h zconf.h
   install -m644 -t "$pkgdir/usr/i486-mingw32/lib" libz.a libz.dll.a
-  install -m644 -t "$pkgdir/usr/i486-mingw32/bin" zlib1.dll
+  install -m755 -t "$pkgdir/usr/i486-mingw32/bin" zlib1.dll
 
   install -d "$pkgdir/usr/i486-mingw32/lib/pkgconfig"
 

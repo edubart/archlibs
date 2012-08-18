@@ -25,5 +25,5 @@ package() {
   cd "$srcdir/libvorbis-$pkgver"
 
   make DESTDIR="$pkgdir" install
-  rm -r $pkgdir/usr/i486-mingw32/share/doc
+  rm -r $pkgdir/usr/i486-mingw32/share
 }

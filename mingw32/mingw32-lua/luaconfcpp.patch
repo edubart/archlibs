@@ -1,5 +1,5 @@
---- luaconf.h	2012-02-17 12:56:43.205940119 -0200
-+++ luaconf.h	2012-02-17 12:57:19.235939152 -0200
+--- a/src/luaconf.h	2012-02-17 12:56:43.205940119 -0200
++++ b/src/luaconf.h	2012-02-17 12:57:19.235939152 -0200
 @@ -161,7 +161,11 @@
 
  #else
@@ -8,7 +8,7 @@
 +#if defined(__cplusplus)
 +#define LUA_API		extern "C"
 +#else
-+#define LUA_API     extern
++#define LUA_API		extern
 +#endif
 
  #endif

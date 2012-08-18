@@ -1,47 +1,45 @@
 # Maintainer: Mikael Eriksson <mikael_miffe_eriksson@yahoo.se3
 
 pkgname=mingw32-lua
-pkgver=5.1.4
+_pkgname=lua
+pkgver=5.1.5
 pkgrel=1
 pkgdesc="A powerful light-weight programming language designed for extending applications. (mingw32)"
 arch=('any')
-url="http://www.lua.org/"
-depends=()
 depends=('mingw32-runtime')
 makedepends=('mingw32-gcc' 'mingw32-w32api')
 license=('MIT')
-source=($url/ftp/lua-$pkgver.tar.gz $url/ftp/patch-lua-$pkgver-4 luaconfcpp.patch)
-options=(!strip !buildflags)
-md5sums=('d0870f2de55d59c1c8419f36e8fac150'
-         '329d8695e3e6f1267190e220559f7b6c'
-         'bcded2282f28e834229b5528aeda3735')
-
-#MYFLAGS="-DLUA_BUILD_AS_DLL"
+source=(http://www.lua.org/ftp/${_pkgname}-${pkgver}.tar.gz
+        luacpp.patch)
+options=(!strip !buildflags !makeflags)
+md5sums=('2e115fe26e435e33b0d5c022e4490567'
+         '71a8472a0116a7639ce6c157b7f13d57')
 
 build() {
   unset LDFLAGS
 
-  cd $srcdir/lua-$pkgver/src
-  patch -i $srcdir/patch-lua-$pkgver-4
-  patch -i $srcdir/luaconfcpp.patch
+  cd "${srcdir}/${_pkgname}-${pkgver}/src"
+  patch -p1 -i "$srcdir/luacpp.patch"
+
+  make CC=i486-mingw32-g++ \
+    AR="i486-mingw32-g++ -shared -Wl,-out-implib=liblua51.dll.a -o" \
+    RANLIB="i486-mingw32-strip" \
+    LUA_A=lua51.dll \
+    MYCFLAGS="-DLUA_BUILD_AS_DLL" \
+    a
+  make clean
   make CC=i486-mingw32-g++ \
     AR="i486-mingw32-ar rcu" \
     RANLIB=i486-mingw32-ranlib \
-    MYCFLAGS=$MYFLAGS \
-    LUA_T=lua.exe \
-    LUAC_T=luac.exe \
-    lua.exe
-  make CC=i486-mingw32-g++ \
-    AR="i486-mingw32-ar rcu" \
-    RANLIB=i486-mingw32-ranlib \
-    MYCFLAGS=$MYFLAGS \
-    LUA_T=lua.exe \
-    LUAC_T=luac.exe \
-    luac.exe
+    LUA_A=liblua51.a \
+    a
   cd ..
-  make TO_BIN="lua.exe luac.exe" INSTALL_DATA="cp -d" INSTALL_TOP=$pkgdir/usr/i486-mingw32 install || return 1
+  make TO_BIN="lua51.dll" TO_LIB="liblua51.dll.a liblua51.a" INSTALL_DATA="cp -d" INSTALL_TOP=$pkgdir/usr/i486-mingw32 install || return 1
   install -D -m 644 etc/lua.pc $pkgdir/usr/i486-mingw32/lib/pkgconfig/lua.pc
   sed -i 's,^prefix=.*$,prefix=/usr/i486-mingw32,' $pkgdir/usr/i486-mingw32/lib/pkgconfig/lua.pc
+  rm -rf $pkgdir/usr/i486-mingw32/share
+  rm -rf $pkgdir/usr/i486-mingw32/man
+  rm -rf $pkgdir/usr/i486-mingw32/lib/lua
 }
 
 # vim: ts=2 sw=2 et ft=sh

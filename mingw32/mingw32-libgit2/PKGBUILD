@@ -1,0 +1,46 @@
+# Maintainer: Hilton Medeiros <medeiros.hilton@gmail.com>
+# Contributor: Dave Reisner <d@falconindy.com>
+
+pkgname=mingw32-libgit2
+_pkgname=libgit2
+pkgver=0.17.0
+pkgrel=1
+pkgdesc="A linkable library for Git (mingw32)"
+arch=('any')
+url="http://libgit2.github.com/"
+depends=('mingw32-runtime' 'mingw32-zlib')
+makedepends=('cmake')
+license=('GPL2')
+options=('!strip' '!buildflags')
+source=("src-$_pkgname-$pkgver.tar.gz::https://github.com/$_pkgname/$_pkgname/tarball/v$pkgver"
+        win32.cmake)
+md5sums=('5a09dd1118d1354375407119d19e0f2c'
+         'ed1e275cf67dc9322f3a6e50e8ddc40c')
+build() {
+  cd "$srcdir"/$_pkgname-*
+
+  sed -i 's/Ws2tcpip/ws2tcpip/' ./src/netops.c
+  unset LDFLAGS
+
+  rm -rf build && mkdir build && cd build
+  cmake .. \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_INSTALL_PREFIX=/usr/i486-mingw32 \
+      -DCMAKE_TOOLCHAIN_FILE=${srcdir}/win32.cmake
+  make
+  cd ..
+
+  rm -rf build2 && mkdir build2 && cd build2
+  cmake .. \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_INSTALL_PREFIX=/usr/i486-mingw32 \
+      -DCMAKE_TOOLCHAIN_FILE=${srcdir}/win32.cmake \
+      -DBUILD_SHARED_LIBS=OFF
+  make
+}
+
+package() {
+  cd "$srcdir"/$_pkgname-*
+  make -C build DESTDIR="$pkgdir" install
+  make -C build2 DESTDIR="$pkgdir" install
+}

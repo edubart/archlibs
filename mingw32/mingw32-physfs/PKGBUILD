@@ -41,5 +41,5 @@ package() {
 
   make DESTDIR="${pkgdir}" install
 
-  install -D -m644 LICENSE.txt "${pkgdir}/usr/i486-mingw32/share/licenses/${pkgname}/LICENSE"
+  rm -rf ${pkgdir}/usr/i486-mingw32/share/licenses
 }

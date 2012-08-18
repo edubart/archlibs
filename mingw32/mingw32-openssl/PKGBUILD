@@ -31,4 +31,6 @@ package() {
   i486-mingw32-strip -g $pkgdir/usr/i486-mingw32/lib/*.a
   i486-mingw32-strip -x -g $pkgdir/usr/i486-mingw32/lib/engines/*.dll
   rm -rf $pkgdir/usr/i486-mingw32/{bin/c_rehash,ssl/misc,ssl/man}
+  rm -rf $pkgdir/usr/i486-mingw32/bin/*.exe
+  rm -rf $pkgdir/usr/i486-mingw32/ssl
 }
