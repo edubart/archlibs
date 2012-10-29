@@ -1,0 +1,29 @@
+pkgname=mingw32-luajit 
+pkgver=2.0.0b11
+pkgrel=3
+pkgdesc='A Just-In-Time Compiler for Lua (mingw32)'
+arch=('any')
+url='http://luajit.org/'
+license=('MIT')
+depends=('mingw32-runtime')
+makedepends=('mingw32-gcc' 'mingw32-w32api')
+source=(http://luajit.org/download/LuaJIT-${pkgver/b/-beta}.tar.gz)
+options=(!strip !buildflags !makeflags)
+md5sums=('824aa2684a11e3cc3abe87350a7b6139')
+
+build() { 
+  unset LDFLAGS
+  cd $srcdir/LuaJIT-${pkgver/b/-beta}/src
+  sed -i 's/BUILDMODE= mixed/BUILDMODE= static/' Makefile
+  make PREFIX=/usr/i486-mingw32 HOST_CC="gcc -m32" CROSS=i486-mingw32- TARGET_SYS=Windows
+}
+
+package() {
+  cd $srcdir/LuaJIT-${pkgver/b/-beta}
+  mkdir -p $pkgdir/usr/i486-mingw32/bin
+  mkdir -p $pkgdir/usr/i486-mingw32/lib
+  mkdir -p $pkgdir/usr/i486-mingw32/include/luajit-2.0/
+  cp src/luajit.exe $pkgdir/usr/i486-mingw32/bin/
+  cp src/{lauxlib.h,lua.h,lua.hpp,luaconf.h,luajit.h,lualib.h} $pkgdir/usr/i486-mingw32/include/luajit-2.0/
+  cp src/libluajit.a $pkgdir/usr/i486-mingw32/lib/
+}
