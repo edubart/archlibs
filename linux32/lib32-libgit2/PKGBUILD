@@ -1,5 +1,6 @@
-pkgname=libgit2
-pkgver=20121106
+_pkgbasename=libgit2
+pkgname=lib32-$_pkgbasename
+pkgver=20121107
 pkgrel=1
 pkgdesc="A linkable library for Git"
 arch=('i686' 'x86_64')
@@ -12,6 +13,11 @@ _gitroot="https://github.com/libgit2/libgit2.git"
 _gitname="libgit2"
 
 build() {
+    export CFLAGS="$CFLAGS -march=i686 -m32"
+    export CXXFLAGS="$CXXFLAGS -march=i686 -m32"
+    export LDFLAGS="$LDFLAGS -march=i686 -m32"
+    export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
+
     msg "Connecting to GIT server...."
 
     if [[ -d $_gitname ]] ; then
@@ -54,4 +60,6 @@ build() {
 package() {
     make -C "$_gitname-build/build" DESTDIR="$pkgdir" install
     make -C "$_gitname-build/build2" DESTDIR="$pkgdir" install
+    mv ${pkgdir}/usr/lib ${pkgdir}/usr/lib32
+    rm -rf ${pkgdir}/usr/include
 }

@@ -17,22 +17,19 @@ md5sums=('84a35715170f2cd4c77a4448772b95d5'
          'a4d786b1b1955cb85b64fd16cbbee3f9')
 
 build() {
-  cd "$srcdir/${pkgname}-${pkgver}"
-  ./configure --prefix=/usr 
-  make
+    cd "$srcdir/${pkgname}-${pkgver}"
+    ./configure --prefix=/usr 
+    make
 }
 
 package() {
-  cd "$srcdir/${pkgname}-${pkgver}"
-  make DESTDIR="$pkgdir" install
+    cd "$srcdir/${pkgname}-${pkgver}"
+    make DESTDIR="$pkgdir" install
 
-# install BSD license
-  install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/COPYING"
-
-# Resolve multilib conflict
-  if [[ $CARCH == "x86_64" ]]; then
-    mv "$pkgdir"/usr/include/ogg/config_types{,-64}.h
-    install -m 644 "$srcdir/config_types.h" \
-      "${pkgdir}/usr/include/ogg/config_types.h"
-  fi
+    # Resolve multilib conflict
+    if [[ $CARCH == "x86_64" ]]; then
+        mv "$pkgdir"/usr/include/ogg/config_types{,-64}.h
+        install -m 644 "$srcdir/config_types.h" \
+        "${pkgdir}/usr/include/ogg/config_types.h"
+    fi
 }

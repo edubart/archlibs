@@ -1,35 +1,25 @@
-# $Id: PKGBUILD 78428 2012-10-18 04:30:04Z bpiotrowski $
-# Maintainer:  Chris Brannon <chris@the-brannons.com>
-# Maintainer:  Bartłomiej Piotrowski 
-# Contributor: Paulo Matias <matiasΘarchlinux-br·org>
-# Contributor: Anders Bergh <anders1@gmail.com>
 
 pkgname=luajit 
-pkgver=2.0.0b11
-pkgrel=3
+pkgver=2.0.0
+pkgrel=1
 pkgdesc='A Just-In-Time Compiler for Lua'
 arch=('i686' 'x86_64')
 url='http://luajit.org/'
 license=('MIT')
-depends=('gcc-libs') 
-source=(http://luajit.org/download/LuaJIT-${pkgver/b/-beta}.tar.gz
+depends=('gcc-libs')
+source=(http://luajit.org/download/LuaJIT-${pkgver}-rc2.tar.gz
         Makefile.patch)
-md5sums=('824aa2684a11e3cc3abe87350a7b6139'
+md5sums=('986a71622014c7a2f8f7f64266128478'
          'c9dff2a84424fa0af322379a5f115fb7')
 
 build() { 
-  cd $srcdir/LuaJIT-${pkgver/b/-beta}
-  patch -Np0 -i $srcdir/Makefile.patch
-  make PREFIX=/usr
+    cd $srcdir/LuaJIT-$pkgver
+    patch -Np0 -i $srcdir/Makefile.patch
+    make PREFIX=/usr
 }
 
 package() {
-  cd $srcdir/LuaJIT-${pkgver/b/-beta}
-  make install DESTDIR=$pkgdir PREFIX=/usr
-
-  install -Dm644 $srcdir/LuaJIT-${pkgver/b/-beta}/COPYRIGHT \
-                 $pkgdir/usr/share/licenses/$pkgname/COPYRIGHT
-
-  # Poor man's slot system
-  ln -s /usr/share/$pkgname $pkgdir/usr/share/$pkgname-${pkgver/b/-beta}
+    cd $srcdir/LuaJIT-$pkgver
+    make install DESTDIR=$pkgdir PREFIX=/usr
+    rm -rf ${pkgdir}/usr/share
 }
