@@ -12,9 +12,9 @@ source=(http://downloads.sourceforge.net/${_pkgbasename}/${_pkgbasename}-${pkgve
 sha1sums=('9291f5c5afefd482c7f3e91ffb3cd4716c6c9ffe')
 
 build() {
-    export CFLAGS="$CFLAGS -march=i686 -m32"
-    export CXXFLAGS="$CXXFLAGS -march=i686 -m32"
-    export LDFLAGS="$LDFLAGS -march=i686 -m32"
+    export CFLAGS="-march=i686 -m32 -fno-stack-protector"
+    export CXXFLAGS="-march=i686 -m32 -fno-stack-protector"
+    export LDFLAGS="-march=i686 -m32 -Wl,--as-needed"
     export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
 
     cd "${srcdir}/${_pkgbasename}-${pkgver}"

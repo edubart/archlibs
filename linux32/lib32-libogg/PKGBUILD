@@ -13,13 +13,13 @@ source=(http://downloads.xiph.org/releases/ogg/$_pkgbasename-$pkgver.tar.gz)
 md5sums=('0a7eb40b86ac050db3a789ab65fe21c2')
 
 build() {
-    export CFLAGS="$CFLAGS -march=i686 -m32"
-    export CXXFLAGS="$CXXFLAGS -march=i686 -m32"
-    export LDFLAGS="$LDFLAGS -march=i686 -m32"
+    export CFLAGS="-march=i686 -m32 -fno-stack-protector"
+    export CXXFLAGS="-march=i686 -m32 -fno-stack-protector"
+    export LDFLAGS="-march=i686 -m32 -Wl,--as-needed"
     export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
 
     cd $srcdir/${_pkgbasename}-${pkgver}
-    ./configure --prefix=/usr --libdir=/usr/lib32
+    ./configure --enable-shared --enable-static --prefix=/usr --libdir=/usr/lib32
     make
 }
 

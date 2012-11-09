@@ -3,7 +3,7 @@
 
 pkgname=mingw32-libgit2
 _pkgname=libgit2
-pkgver=20121107
+pkgver=20121109
 pkgrel=1
 pkgdesc="A linkable library for Git (mingw32)"
 arch=('any')
@@ -14,41 +14,54 @@ license=('GPL2')
 options=('!strip' '!buildflags')
 source=(win32.cmake)
 md5sums=('ed1e275cf67dc9322f3a6e50e8ddc40c')
-_gitroot="https://github.com/edubart/libgit2.git"
+_gitroot="https://github.com/libgit2/libgit2.git"
 _gitname="libgit2"
+
 build() {
-  msg "Connecting to GIT server...."
+    msg "Connecting to GIT server...."
 
-  if [[ -d $_gitname ]] ; then
-    cd "$_gitname" && git pull origin
-    msg "The local files are updated."
-  else
-    git clone "$_gitroot"
-  fi
+    if [[ -d $_gitname ]] ; then
+        cd "$_gitname" && git pull origin
+        msg "The local files are updated."
+    else
+        git clone "$_gitroot"
+    fi
 
-  msg "GIT checkout done or server timeout"
-  msg "Starting make..."
+    msg "GIT checkout done or server timeout"
+    msg "Starting make..."
 
-  rm -rf "$srcdir/$_gitname-build"
-  git clone "$srcdir/$_gitname" "$srcdir/$_gitname-build"
-  cd "$srcdir/$_gitname-build"
+    rm -rf "$srcdir/$_gitname-build"
+    git clone "$srcdir/$_gitname" "$srcdir/$_gitname-build"
+    cd "$srcdir/$_gitname-build"
 
-  sed -i 's/Ws2tcpip/ws2tcpip/' ./src/netops.c
-  unset LDFLAGS
+    sed -i 's/Ws2tcpip/ws2tcpip/' ./src/netops.c
+    unset LDFLAGS
 
-  rm -fr build
-  mkdir build && cd build
-  cmake .. \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INSTALL_PREFIX=/usr/i486-mingw32 \
-    -DBUILD_SHARED_LIBS=OFF \
-    -DBUILD_CLAR=OFF \
-    -DTHREADSAFE=ON \
-    -DCMAKE_TOOLCHAIN_FILE=${srcdir}/win32.cmake
-  make
+    rm -fr build
+    mkdir build && cd build
+    cmake .. \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/usr/i486-mingw32 \
+        -DBUILD_SHARED_LIBS=OFF \
+        -DBUILD_CLAR=OFF \
+        -DTHREADSAFE=OFF \
+        -DCMAKE_TOOLCHAIN_FILE=${srcdir}/win32.cmake
+    make
+    cd ..
+
+    rm -fr build2
+    mkdir build2 && cd build2
+    cmake .. \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/usr/i486-mingw32 \
+        -DBUILD_CLAR=OFF \
+        -DTHREADSAFE=OFF \
+        -DCMAKE_TOOLCHAIN_FILE=${srcdir}/win32.cmake
+    make
 }
 
 package() {
   cd "$srcdir"/$_pkgname-*
   make -C build DESTDIR="$pkgdir" install
+  make -C build2 DESTDIR="$pkgdir" install
 }

@@ -13,18 +13,26 @@ source=(http://kcat.strangesoft.net/openal-releases/openal-soft-${pkgver}.tar.bz
 md5sums=('3d8b86c21a2f87a2a5e60f78f3b3f03d')
 
 build() {
-    export CFLAGS="$CFLAGS -march=i686 -m32"
-    export CXXFLAGS="$CXXFLAGS -march=i686 -m32"
-    export LDFLAGS="$LDFLAGS -march=i686 -m32"
+    export CFLAGS="-march=i686 -m32 -fno-stack-protector"
+    export CXXFLAGS="-march=i686 -m32 -fno-stack-protector"
+    export LDFLAGS="-march=i686 -m32 -Wl,--as-needed"
     export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
 
+    mkdir -p ${srcdir}/${_pkgbasename}-soft-${pkgver}/build
     cd ${srcdir}/${_pkgbasename}-soft-${pkgver}/build
+    cmake -D CMAKE_INSTALL_PREFIX=/usr -D CMAKE_BUILD_TYPE=Release -D LIBTYPE=STATIC -D LIB_SUFFIX=32 -D UTILS=OFF -D EXAMPLES=OFF ..
+    make
+
+    mkdir -p ${srcdir}/${_pkgbasename}-soft-${pkgver}/build2
+    cd ${srcdir}/${_pkgbasename}-soft-${pkgver}/build2
     cmake -D CMAKE_INSTALL_PREFIX=/usr -D CMAKE_BUILD_TYPE=Release -D LIB_SUFFIX=32 -D UTILS=OFF -D EXAMPLES=OFF ..
     make
 }
 
 package() {
     cd ${srcdir}/${_pkgbasename}-soft-${pkgver}/build
+    make DESTDIR=${pkgdir}/ install 
+    cd ${srcdir}/${_pkgbasename}-soft-${pkgver}/build2
     make DESTDIR=${pkgdir}/ install 
     rm -rf "${pkgdir}"/usr/{include,share,bin}
 }

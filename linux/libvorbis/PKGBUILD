@@ -18,7 +18,7 @@ md5sums=('6b1a36f0d72332fae5130688e65efe1f')
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
   #-march=i686 optimizes too much, strip it out
-  CFLAGS=${CFLAGS/-march=$CARCH} LIBS+="-lm" ./configure --prefix=/usr
+  CFLAGS=${CFLAGS/-march=$CARCH} LIBS+="-lm" ./configure --prefix=/usr --enable-shared --enable-static
   make
 }
 
@@ -30,5 +30,4 @@ check() {
 package() {
   cd "${srcdir}/${pkgname}-${pkgver}"
   make DESTDIR="${pkgdir}" install
-  install -Dm644 COPYING "${pkgdir}/usr/share/licenses/$pkgname/LICENSE"
 }

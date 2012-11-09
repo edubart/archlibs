@@ -7,19 +7,16 @@ arch=('x86_64')
 url='http://luajit.org/'
 license=('MIT')
 depends=('gcc-multilib') 
-source=(http://luajit.org/download/LuaJIT-$pkgver-rc2.tar.gz
-        Makefile.patch)
-md5sums=('986a71622014c7a2f8f7f64266128478'
-         'c9dff2a84424fa0af322379a5f115fb7')
+source=(http://luajit.org/download/LuaJIT-$pkgver-rc3.tar.gz)
+md5sums=('97a2b87cc0490784f54b64cfb3b8f5ad')
 
 build() { 
-    export CFLAGS="$CFLAGS -march=i686 -m32"
-    export CXXFLAGS="$CXXFLAGS -march=i686 -m32"
-    export LDFLAGS="$LDFLAGS -march=i686 -m32"
+    export CFLAGS="-march=i686 -m32 -fno-stack-protector"
+    export CXXFLAGS="-march=i686 -m32 -fno-stack-protector"
+    export LDFLAGS="-march=i686 -m32 -Wl,--as-needed"
     export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
 
     cd $srcdir/LuaJIT-$pkgver
-    patch -Np0 -i $srcdir/Makefile.patch
     make PREFIX=/usr
 }
 

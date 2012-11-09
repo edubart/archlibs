@@ -18,7 +18,7 @@ md5sums=('84a35715170f2cd4c77a4448772b95d5'
 
 build() {
     cd "$srcdir/${pkgname}-${pkgver}"
-    ./configure --prefix=/usr 
+    ./configure --prefix=/usr --enable-shared --enable-static
     make
 }
 

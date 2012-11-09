@@ -21,9 +21,9 @@ md5sums=('ae412727c8c15b67880aef7bd2999b2e'
          '3bf51be3a1bbd262be46dc619f92aa90')
 
 build() {
-    export CFLAGS="$CFLAGS -march=i686 -m32"
-    export CXXFLAGS="$CXXFLAGS -march=i686 -m32"
-    export LDFLAGS="$LDFLAGS -march=i686 -m32"
+    export CFLAGS="-march=i686 -m32 -fno-stack-protector"
+    export CXXFLAGS="-march=i686 -m32 -fno-stack-protector"
+    export LDFLAGS="-march=i686 -m32 -Wl,--as-needed"
     export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
 
     cd $srcdir/$_pkgbasename-$_ver

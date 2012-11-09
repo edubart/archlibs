@@ -12,11 +12,9 @@ source=("http://zlib.net/current/zlib-${pkgver}.tar.gz")
 md5sums=('60df6a37c56e7c1366cca812414f7b85')
 
 build() {
-    export CC="gcc -m32"
-    export CXX="g++ -m32"
-    export CFLAGS="$CFLAGS -march=i686 -m32"
-    export CXXFLAGS="$CXXFLAGS -march=i686 -m32"
-    export LDFLAGS="$LDFLAGS -march=i686 -m32"
+    export CFLAGS="-march=i686 -m32 -fno-stack-protector"
+    export CXXFLAGS="-march=i686 -m32 -fno-stack-protector"
+    export LDFLAGS="-march=i686 -m32 -Wl,--as-needed"
     export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
 
     cd ${srcdir}/zlib-$pkgver

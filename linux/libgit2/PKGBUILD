@@ -1,5 +1,5 @@
 pkgname=libgit2
-pkgver=20121106
+pkgver=20121108
 pkgrel=1
 pkgdesc="A linkable library for Git"
 arch=('i686' 'x86_64')
@@ -35,7 +35,6 @@ build() {
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_INSTALL_PREFIX=/usr \
         -DBUILD_CLAR=OFF \
-        -DTHREADSAFE=ON \
         -DBUILD_SHARED_LIBS=ON
     make
     cd ..
@@ -46,7 +45,6 @@ build() {
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_INSTALL_PREFIX=/usr \
         -DBUILD_CLAR=OFF \
-        -DTHREADSAFE=ON \
         -DBUILD_SHARED_LIBS=OFF
     make
 }

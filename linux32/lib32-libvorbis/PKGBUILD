@@ -13,13 +13,13 @@ source=(http://downloads.xiph.org/releases/vorbis/${_pkgbasename}-${pkgver}.tar.
 md5sums=('6b1a36f0d72332fae5130688e65efe1f')
 
 build() {
-    export CFLAGS="$CFLAGS -march=i686 -m32"
-    export CXXFLAGS="$CXXFLAGS -march=i686 -m32"
-    export LDFLAGS="$LDFLAGS -march=i686 -m32"
+    export CFLAGS="-march=i686 -m32 -fno-stack-protector"
+    export CXXFLAGS="-march=i686 -m32 -fno-stack-protector"
+    export LDFLAGS="-march=i686 -m32 -Wl,--as-needed"
     export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
 
     cd ${srcdir}/${_pkgbasename}-${pkgver}
-    ./configure --prefix=/usr --disable-static --libdir=/usr/lib32
+    ./configure --enable-shared --enable-static --prefix=/usr --libdir=/usr/lib32
     make
 }
 
