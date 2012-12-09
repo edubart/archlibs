@@ -6,11 +6,11 @@ pkgdesc='A Just-In-Time Compiler for Lua'
 arch=('x86_64')
 url='http://luajit.org/'
 license=('MIT')
-depends=('gcc-multilib') 
-source=(http://luajit.org/download/LuaJIT-$pkgver-rc3.tar.gz)
+depends=('gcc-multilib')
+source=(http://luajit.org/download/LuaJIT-$pkgver.tar.gz)
 md5sums=('97a2b87cc0490784f54b64cfb3b8f5ad')
 
-build() { 
+build() {
     export CFLAGS="-march=i686 -m32 -fno-stack-protector"
     export CXXFLAGS="-march=i686 -m32 -fno-stack-protector"
     export LDFLAGS="-march=i686 -m32 -Wl,--as-needed"

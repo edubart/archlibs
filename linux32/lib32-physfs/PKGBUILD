@@ -1,7 +1,7 @@
 _pkgbasename=physfs
 pkgname=lib32-physfs
 pkgver=2.0.3
-pkgrel=1
+pkgrel=2
 pkgdesc="A library to provide abstract access to various archives"
 arch=('x86_64')
 url="http://icculus.org/physfs/"

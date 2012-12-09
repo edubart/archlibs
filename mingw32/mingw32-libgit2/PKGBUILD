@@ -3,7 +3,7 @@
 
 pkgname=mingw32-libgit2
 _pkgname=libgit2
-pkgver=20121109
+pkgver=20121205
 pkgrel=1
 pkgdesc="A linkable library for Git (mingw32)"
 arch=('any')
@@ -14,7 +14,7 @@ license=('GPL2')
 options=('!strip' '!buildflags')
 source=(win32.cmake)
 md5sums=('ed1e275cf67dc9322f3a6e50e8ddc40c')
-_gitroot="https://github.com/libgit2/libgit2.git"
+_gitroot="https://github.com/edubart/libgit2.git"
 _gitname="libgit2"
 
 build() {

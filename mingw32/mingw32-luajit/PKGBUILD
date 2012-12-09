@@ -7,26 +7,25 @@ url='http://luajit.org/'
 license=('MIT')
 depends=('mingw32-runtime')
 makedepends=('mingw32-gcc' 'mingw32-w32api')
-source=(http://luajit.org/download/LuaJIT-${pkgver}-rc3.tar.gz)
+source=(http://luajit.org/download/LuaJIT-${pkgver}.tar.gz)
 options=(!strip !buildflags !makeflags)
 md5sums=('97a2b87cc0490784f54b64cfb3b8f5ad')
 
 build() { 
     unset LDFLAGS
-    cd $srcdir/LuaJIT-${pkgver}/src
-    sed -i 's/BUILDMODE= mixed/BUILDMODE= dynamic/' Makefile
-    make PREFIX=/usr/i486-mingw32 HOST_CC="gcc -m32" CROSS=i486-mingw32- TARGET_SYS=Windows
-    sed -i 's/BUILDMODE= dynamic/BUILDMODE= static/' Makefile
-    make PREFIX=/usr/i486-mingw32 HOST_CC="gcc -m32" CROSS=i486-mingw32- TARGET_SYS=Windows
-}
-
-package() {
-    cd $srcdir/LuaJIT-${pkgver}
     mkdir -p $pkgdir/usr/i486-mingw32/bin
     mkdir -p $pkgdir/usr/i486-mingw32/lib
     mkdir -p $pkgdir/usr/i486-mingw32/include/luajit-2.0/
-    cp src/luajit.exe $pkgdir/usr/i486-mingw32/bin/
-    cp src/{lauxlib.h,lua.h,lua.hpp,luaconf.h,luajit.h,lualib.h} $pkgdir/usr/i486-mingw32/include/luajit-2.0/
-    cp src/libluajit.a $pkgdir/usr/i486-mingw32/lib/
-    cp src/lua51.dll $pkgdir/usr/i486-mingw32/lib/luajit51.dll
+    cd $srcdir/LuaJIT-${pkgver}/src
+    sed -i 's/^BUILDMODE= [a-z]*$/BUILDMODE= dynamic/' Makefile
+    make PREFIX=/usr/i486-mingw32 HOST_CC="gcc -m32" CROSS=i486-mingw32- TARGET_SYS=Windows
+    cp {lauxlib.h,lua.h,lua.hpp,luaconf.h,luajit.h,lualib.h} $pkgdir/usr/i486-mingw32/include/luajit-2.0/
+    cp lua51.dll $pkgdir/usr/i486-mingw32/bin/luajit51.dll
+    make clean
+
+    sed -i 's/^BUILDMODE= [a-z]*$/BUILDMODE= static/' Makefile
+    make PREFIX=/usr/i486-mingw32 HOST_CC="gcc -m32" CROSS=i486-mingw32- TARGET_SYS=Windows
+    cp libluajit.a $pkgdir/usr/i486-mingw32/lib/
+    cp luajit.exe $pkgdir/usr/i486-mingw32/bin/
+    make clean
 }

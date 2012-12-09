@@ -8,11 +8,13 @@ license=('custom')
 url="http://www.zlib.net/"
 depends=('glibc')
 makedepends=()
+options=(!buildflags !strip)
 source=("http://zlib.net/current/zlib-${pkgver}.tar.gz")
 md5sums=('60df6a37c56e7c1366cca812414f7b85')
 
 build() {
     cd ${srcdir}/zlib-$pkgver
+    export CFLAGS="-g -O2"
     ./configure --prefix=/usr
     make
 }

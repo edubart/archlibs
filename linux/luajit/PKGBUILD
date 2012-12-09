@@ -1,16 +1,15 @@
-
-pkgname=luajit 
+pkgname=luajit
 pkgver=2.0.0
-pkgrel=3
+pkgrel=1
 pkgdesc='A Just-In-Time Compiler for Lua'
 arch=('i686' 'x86_64')
 url='http://luajit.org/'
 license=('MIT')
 depends=('gcc-libs')
-source=(http://luajit.org/download/LuaJIT-${pkgver}-rc3.tar.gz)
+source=(http://luajit.org/download/LuaJIT-${pkgver}.tar.gz)
 md5sums=('97a2b87cc0490784f54b64cfb3b8f5ad')
 
-build() { 
+build() {
     cd $srcdir/LuaJIT-$pkgver
     make PREFIX=/usr
 }
