@@ -1,0 +1,43 @@
+# Maintainer: Mikael Eriksson <mikael_miffe_eriksson@yahoo.se3
+
+pkgname=mingw32-lua
+_pkgname=lua
+pkgver=5.1.5
+pkgrel=1
+pkgdesc="A powerful light-weight programming language designed for extending applications. (mingw32)"
+arch=('any')
+depends=('mingw32-runtime')
+makedepends=('mingw32-gcc' 'mingw32-w32api')
+license=('MIT')
+source=(http://www.lua.org/ftp/${_pkgname}-${pkgver}.tar.gz
+        luacpp.patch)
+options=(!strip !makeflags)
+md5sums=('2e115fe26e435e33b0d5c022e4490567'
+         '71a8472a0116a7639ce6c157b7f13d57')
+
+build() {
+  cd "${srcdir}/${_pkgname}-${pkgver}/src"
+  patch -p1 -i "$srcdir/luacpp.patch"
+
+  make CC=i486-mingw32-g++ \
+    AR="i486-mingw32-g++ -shared -Wl,-out-implib=liblua51.dll.a -o" \
+    RANLIB="i486-mingw32-strip" \
+    LUA_A=lua51.dll \
+    MYCFLAGS="-DLUA_BUILD_AS_DLL" \
+    a
+  make clean
+  make CC=i486-mingw32-g++ \
+    AR="i486-mingw32-ar rcu" \
+    RANLIB=i486-mingw32-ranlib \
+    LUA_A=liblua51.a \
+    a
+  cd ..
+  make TO_BIN="lua51.dll" TO_LIB="liblua51.dll.a liblua51.a" INSTALL_DATA="cp -d" INSTALL_TOP=$pkgdir/usr/i486-mingw32 install || return 1
+  install -D -m 644 etc/lua.pc $pkgdir/usr/i486-mingw32/lib/pkgconfig/lua.pc
+  sed -i 's,^prefix=.*$,prefix=/usr/i486-mingw32,' $pkgdir/usr/i486-mingw32/lib/pkgconfig/lua.pc
+  rm -rf $pkgdir/usr/i486-mingw32/share
+  rm -rf $pkgdir/usr/i486-mingw32/man
+  rm -rf $pkgdir/usr/i486-mingw32/lib/lua
+}
+
+# vim: ts=2 sw=2 et ft=sh

@@ -1,0 +1,38 @@
+_pkgbasename=openal
+pkgname=lib32-$_pkgbasename
+pkgver=1.15
+pkgrel=1
+pkgdesc="OpenAL audio library for use with opengl (32-bit)"
+arch=('x86_64')
+url="http://www.openal.org/"
+license=('LGPL')
+depends=('lib32-glibc' $_pkgbasename)
+makedepends=('lib32-alsa-lib' 'lib32-sdl' 'lib32-libpulse' 'pkgconfig' 'cmake' gcc-multilib)
+options=('!libtool')
+source=(http://kcat.strangesoft.net/openal-releases/openal-soft-${pkgver}.tar.bz2)
+md5sums=('0eeb0551420b8fec300fe5db6d9a7902')
+
+build() {
+    export CFLAGS="${CFLAGS} -march=i686 -m32"
+    export CXXFLAGS="${CXXFLAGS} -march=i686 -m32"
+    export LDFLAGS="${LDFLAGS} -march=i686 -m32"
+    export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
+
+    mkdir -p ${srcdir}/${_pkgbasename}-soft-${pkgver}/build
+    cd ${srcdir}/${_pkgbasename}-soft-${pkgver}/build
+    cmake -D CMAKE_INSTALL_PREFIX=/usr -D CMAKE_BUILD_TYPE=Release -D LIBTYPE=STATIC -D LIB_SUFFIX=32 -D UTILS=OFF -D EXAMPLES=OFF ..
+    make
+
+    mkdir -p ${srcdir}/${_pkgbasename}-soft-${pkgver}/build2
+    cd ${srcdir}/${_pkgbasename}-soft-${pkgver}/build2
+    cmake -D CMAKE_INSTALL_PREFIX=/usr -D CMAKE_BUILD_TYPE=Release -D LIB_SUFFIX=32 -D UTILS=OFF -D EXAMPLES=OFF ..
+    make
+}
+
+package() {
+    cd ${srcdir}/${_pkgbasename}-soft-${pkgver}/build
+    make DESTDIR=${pkgdir}/ install 
+    cd ${srcdir}/${_pkgbasename}-soft-${pkgver}/build2
+    make DESTDIR=${pkgdir}/ install 
+    rm -rf "${pkgdir}"/usr/{include,share,bin}
+}

@@ -1,0 +1,32 @@
+_pkgbasename=glew
+pkgname=lib32-$_pkgbasename
+pkgver=1.9.0
+pkgrel=1
+pkgdesc="A cross-platform C/C++ extension loading library (32 bit)"
+arch=('x86_64')
+url="http://glew.sourceforge.net"
+license=('BSD' 'MIT' 'GPL')
+depends=('lib32-libxmu' 'lib32-libxi' 'lib32-glu' "$_pkgbasename>=$pkgver")
+makedepends=('gcc-multilib')
+source=(http://downloads.sourceforge.net/${_pkgbasename}/${_pkgbasename}-${pkgver}.tgz)
+sha1sums=('9291f5c5afefd482c7f3e91ffb3cd4716c6c9ffe')
+
+build() {
+    export CFLAGS="${CFLAGS} -march=i686 -m32"
+    export CXXFLAGS="${CXXFLAGS} -march=i686 -m32"
+    export LDFLAGS="${LDFLAGS} -march=i686 -m32"
+    export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
+
+    cd "${srcdir}/${_pkgbasename}-${pkgver}"
+    sed -i "s|CC = cc|CC = gcc ${CFLAGS} -march=i686 -m32|" config/Makefile.linux
+    sed -i "s|LD = cc|LD = gcc ${CFLAGS} ${LDFLAGS} -march=i686 -m32|" config/Makefile.linux
+    sed -i 's|lib64|lib32|' config/Makefile.linux
+    make
+}
+
+package() {
+    cd "${srcdir}/${_pkgbasename}-${pkgver}"
+    make GLEW_DEST="${pkgdir}/usr" install
+    chmod 0755 "${pkgdir}/usr/lib32/libGLEW.so.${pkgver}"
+    rm -rf "${pkgdir}"/usr/{include,bin}
+}
