@@ -24,17 +24,17 @@ build() {
     patch -p1 -i "${srcdir}/lua-arch.patch"
     patch -p1 -i "${srcdir}/lua-5.1-cflags.diff"
 
-    make INSTALL_DATA="cp -d" TO_LIB="liblua.a liblua.so liblua.so.5.1" \
+    make INSTALL_DATA="cp -d" TO_LIB="liblua5.1.a liblua5.1.so liblua5.1.so.5.1" \
          INSTALL_TOP="${pkgdir}/usr" MYLDFLAGS="$LDFLAGS" \
          linux
 }
 
 package() {
     cd "${srcdir}/lua-${pkgver}"
-    make INSTALL_DATA="cp -d" TO_LIB="liblua.a liblua.so liblua.so.5.1 liblua.so.$pkgver" \
+    make INSTALL_DATA="cp -d" TO_LIB="liblua5.1.a liblua5.1.so liblua5.1.so.5.1 liblua5.1.so.$pkgver" \
          INSTALL_TOP="${pkgdir}/usr" \
          install
-    install -D -m644 etc/lua.pc "${pkgdir}/usr/lib32/pkgconfig/lua.pc"
     rm -rf ${pkgdir}/usr/{bin,include,share,man}
     mv ${pkgdir}/usr/lib ${pkgdir}/usr/lib32
+    install -D -m644 etc/lua.pc "${pkgdir}/usr/lib32/pkgconfig/lua.pc"
 }
