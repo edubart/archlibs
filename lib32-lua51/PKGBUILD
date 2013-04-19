@@ -1,5 +1,5 @@
 _pkgbasename=lua
-pkgname=lib32-${_pkgbasename}
+pkgname=lib32-${_pkgbasename}51
 pkgver=5.1.5
 pkgrel=1
 pkgdesc="A powerful light-weight programming language designed for extending applications" 

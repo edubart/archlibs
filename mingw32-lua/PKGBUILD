@@ -1,9 +1,10 @@
 # Maintainer: Mikael Eriksson <mikael_miffe_eriksson@yahoo.se3
 
-pkgname=mingw32-lua
+pkgname=mingw32-lua51
 _pkgname=lua
+conflicts=mingw32-lua
 pkgver=5.1.5
-pkgrel=1
+pkgrel=2
 pkgdesc="A powerful light-weight programming language designed for extending applications. (mingw32)"
 arch=('any')
 depends=('mingw32-runtime')
