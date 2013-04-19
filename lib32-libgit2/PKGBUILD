@@ -1,6 +1,6 @@
 _pkgbasename=libgit2
 pkgname=lib32-$_pkgbasename
-pkgver=20121210
+pkgver=20130320
 pkgrel=1
 pkgdesc="A linkable library for Git"
 arch=('i686' 'x86_64')
@@ -9,7 +9,7 @@ depends=('zlib' 'openssl')
 makedepends=('cmake')
 license=('GPL2')
 
-_gitroot="https://github.com/edubart/libgit2.git"
+_gitroot="https://github.com/libgit2/libgit2.git"
 _gitname="libgit2"
 
 build() {
