@@ -52,7 +52,7 @@ build() {
 	./Configure --prefix=/usr --openssldir=/etc/ssl --libdir=lib \
 		shared zlib ${optflags} \
 		"${openssltarget}" \
-		"-Wa,--noexecstack ${CFLAGS} ${LDFLAGS}"
+		"-Wa,--noexecstack ${CFLAGS} ${LDFLAGS} -DPURIFY"
 
 	make depend
 	make
