@@ -1,7 +1,7 @@
 _pkgbasename=lua
 pkgname=lib32-${_pkgbasename}51
 pkgver=5.1.5
-pkgrel=1
+pkgrel=2
 pkgdesc="A powerful light-weight programming language designed for extending applications" 
 arch=('x86_64')
 url="http://www.lua.org/"
@@ -30,11 +30,18 @@ build() {
 }
 
 package() {
+    mkdir -p $pkgdir/usr/bin/
+    mkdir -p $pkgdir/usr/lib32/
+    mkdir -p $pkgdir/usr/lib32/pkgconfig/
+
     cd "${srcdir}/lua-${pkgver}"
-    make INSTALL_DATA="cp -d" TO_LIB="liblua5.1.a liblua5.1.so liblua5.1.so.5.1 liblua5.1.so.$pkgver" \
-         INSTALL_TOP="${pkgdir}/usr" \
-         install
-    rm -rf ${pkgdir}/usr/{bin,include,share,man}
-    mv ${pkgdir}/usr/lib ${pkgdir}/usr/lib32
-    install -D -m644 etc/lua.pc "${pkgdir}/usr/lib32/pkgconfig/lua.pc"
+    install -Dm 755 src/lua $pkgdir/usr/bin/lua5.132
+    install -Dm 755 src/luac $pkgdir/usr/bin/luac5.132
+    install -Dm 644 src/liblua.a $pkgdir/usr/lib32/liblua5.1.a
+    install -Dm 644 src/liblua.so $pkgdir/usr/lib32/liblua5.1.so
+    install -Dm 644 src/liblua.so.5.1 $pkgdir/usr/lib32/liblua5.1.so.5.1
+    install -Dm 644 src/liblua.so.5.1.5 $pkgdir/usr/lib32/liblua5.1.so.5.1.5
+    ln -s $pkgdir/usr/lib32/liblua5.1.so $pkgdir/usr/lib32/liblua.so.5.1
+    ln -s $pkgdir/usr/lib32/liblua5.1.so $pkgdir/usr/lib32/liblua.so.5.1.5
+    install -Dm 644 etc/lua.pc ${pkgdir}/usr/lib32/pkgconfig/lua5.1.pc
 }
