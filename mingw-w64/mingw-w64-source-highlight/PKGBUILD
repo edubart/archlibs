@@ -1,0 +1,37 @@
+# Maintainer: edubart <edub4rt@gmail.com>
+pkgname=mingw-w64-source-highlight
+_pkgname=source-highlight
+pkgver=3.1.7
+pkgrel=6
+pkgdesc="Convert source code to syntax highlighted document"
+arch=(any)
+url="http://www.gnu.org/software/src-highlite/"
+license=('GPL')
+depends=('bash' 'mingw-w64-boost')
+makedepends=('ctags' 'mingw-w64-boost')
+options=(!strip !buildflags !libtool)
+source=("ftp://ftp.gnu.org/gnu/src-highlite/${_pkgname}-${pkgver}.tar.gz")
+md5sums=('0ff81588d3536b4c4e571122ba940595')
+
+_architectures="i686-w64-mingw32 x86_64-w64-mingw32"
+
+build() {
+  unset LDFLAGS
+  for _arch in ${_architectures}; do
+      mkdir -p ${srcdir}/${_pkgname}-${pkgver}-build-${_arch} && cd ${srcdir}/${_pkgname}-${pkgver}-build-${_arch}
+      ${srcdir}/${_pkgname}-${pkgver}/configure --prefix=/usr/${_arch} --sysconfdir=/usr/${_arch}/etc --host=${_arch} --with-boost-regex=boost_regex-mt
+      make
+  done
+}
+
+package() {
+  for _arch in ${_architectures}; do
+      cd ${srcdir}/${_pkgname}-${pkgver}-build-${_arch}  
+      make DESTDIR="$pkgdir" install
+      rm -r $pkgdir/usr/${_arch}/share/man
+      ${_arch}-strip --strip-unneeded "$pkgdir"/usr/${_arch}/bin/*.dll
+      ${_arch}-strip -g "$pkgdir"/usr/${_arch}/lib/*.a
+  done
+}
+
+# vim:set ts=2 sw=2 et:

@@ -1,0 +1,38 @@
+pkgname=lib32-chipmunk
+_pkgname=chipmunk
+pkgver=6.2.0
+pkgrel=9
+pkgdesc="A high-performance 2D rigid body physics library"
+arch=('i686' 'x86_64')
+url="http://chipmunk-physics.net/"
+license=('MIT')
+depends=('glibc')
+makedepends=('cmake')
+options=()
+source=(http://files.slembcke.net/chipmunk/release/Chipmunk-${pkgver%%.*}.x/Chipmunk-$pkgver.tgz)
+
+build() {
+  export CFLAGS="${CFLAGS} -march=i686 -m32 -DCHIPMUNK_FFI"
+  export CXXFLAGS="${CXXFLAGS} -march=i686 -m32"
+  export LDFLAGS="${LDFLAGS} -march=i686 -m32"
+  export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
+  
+  cd "$srcdir/Chipmunk-$pkgver"
+  sed -i '/MAKE_PROPERTIES_REF(cpShape, IsSensor);/d' include/chipmunk/chipmunk_ffi.h
+  sed -i 's/-ffast-math//' CMakeLists.txt
+  cmake -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DBUILD_DEMOS=OFF \
+        -DCMAKE_C_FLAGS="-march=i686 -m32  -DCHIPMUNK_FFI" -DCMAKE_LIBRARY_PATH=/usr/lib32 .
+  make clean
+  make
+}
+
+package() {
+  cd "$srcdir/Chipmunk-$pkgver"
+  make DESTDIR="$pkgdir" install
+  rm -rf "${pkgdir}"/usr/{include,share,bin}
+  mv ${pkgdir}/usr/lib ${pkgdir}/usr/lib32
+}
+
+sha256sums=('75fd4098b98dd23e5c1f78a1c9e3080768fb6256143e261638a624163cde5af8')

@@ -1,0 +1,58 @@
+_pkgbasename=physfs
+pkgname=lib32-physfs-hg
+pkgver=1301
+pkgrel=1
+pkgdesc="A library to provide abstract access to various archives"
+arch=('x86_64')
+url="http://icculus.org/physfs/"
+license=('ZLIB')
+depends=('lib32-zlib' 'mercurial')
+makedepends=('cmake')
+source=()
+sha1sums=()
+provides=(lib32-physfs)
+replaces=(lib32-physfs)
+conflicts=(lib32-physfs)
+
+_hgroot="http://hg.icculus.org/icculus/physfs"
+_hgrepo="physfs"
+
+build() {
+  export CFLAGS="${CFLAGS} -march=i686 -m32"
+  export CXXFLAGS="${CXXFLAGS} -march=i686 -m32"
+  export LDFLAGS="${LDFLAGS} -march=i686 -m32"
+  export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
+
+  cd "$srcdir"
+  msg "Connecting to Mercurial server...."
+  if [ -d $_hgrepo ]; then
+    cd $_hgrepo
+    hg pull -u || true
+    msg "The local files are updated."
+  else
+    hg clone $_hgroot $_hgrepo || true
+  fi
+
+  msg "Mercurial checkout done or server timeout"
+  msg "Starting make..."
+
+  rm -rf "$srcdir/$_hgrepo-build"
+  cp -r "$srcdir/$_hgrepo" "$srcdir/$_hgrepo-build"
+
+  cd "${srcdir}/$_hgrepo-build"
+  sed -i 's/-Werror//' CMakeLists.txt
+  export CFLAGS="$CFLAGS -fno-strict-aliasing"
+  export CXXFLAGS="$CXXFLAGS -fno-strict-aliasing"
+  cmake . -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DPHYSFS_BUILD_TEST=OFF -DPHYSFS_BUILD_WX_TEST=OFF \
+    -DCMAKE_LIBRARY_PATH=/usr/lib32
+  make all
+}
+
+package() {
+  cd "${srcdir}/$_hgrepo-build"
+  make DESTDIR="${pkgdir}" install
+  mv ${pkgdir}/usr/lib ${pkgdir}/usr/lib32
+  rm -rf ${pkgdir}/usr/include
+}

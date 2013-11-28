@@ -1,0 +1,41 @@
+# Maintainer: Sven-Hendrik Haase <sh@lutzhaase.com>
+
+pkgname=lib32-smpeg2
+_pkgname=smpeg2
+epoch=1
+pkgver=2.0.0
+pkgrel=1
+pkgdesc="SDL2 MPEG Player Library"
+arch=('i686' 'x86_64')
+url="http://icculus.org/smpeg/"
+license=('LGPL')
+depends=('sdl2' 'gcc-libs')
+makedepends=('svn')
+source=("${_pkgname}::svn://svn.icculus.org/smpeg/tags/release_${pkgver//./_}")
+md5sums=('SKIP')
+options=('!libtool')
+
+build() {
+  export CFLAGS="${CFLAGS} -march=i686 -m32"
+  export CXXFLAGS="${CXXFLAGS} -march=i686 -m32"
+  export LDFLAGS="${LDFLAGS} -march=i686 -m32"
+  export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
+
+  cd ${srcdir}/${_pkgname}
+  ./autogen.sh
+  ./configure --enable-shared --enable-static \
+	     --prefix=/usr --libdir=/usr/lib32 \
+	    --disable-sdltest \
+	    --disable-gtk-player \
+	    --disable-gtktest \
+	    --disable-opengl-player \
+			--without-x
+  make
+}
+
+package() {
+  cd ${srcdir}/${_pkgname}
+  make DESTDIR=${pkgdir} install
+
+  rm -rf ${pkgdir}/usr/{share,bin}
+}

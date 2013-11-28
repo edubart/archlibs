@@ -1,0 +1,62 @@
+pkgname=mingw32-boost
+pkgver=1.54.0
+_boostver=${pkgver//./_}
+pkgrel=1
+pkgdesc="Free peer-reviewed portable C++ source libraries (mingw32)"
+arch=(any)
+_arch_target=i486-mingw32
+url="http://www.boost.org/"
+license=('custom')
+provides=('mingw32-boost')
+conflicts=('mingw32-boost')
+depends=('mingw32-runtime')
+# Depends on native Boost so we can use its bjam instead of building it ourself first
+makedepends=('mingw32-gcc' 'boost' 'bzip2')
+options=(!strip)
+source=(http://downloads.sourceforge.net/sourceforge/boost/boost_${_boostver}.tar.bz2)
+
+build() {
+	cd "$srcdir/boost_${_boostver}"
+
+	cat > user-config.jam << EOF
+using gcc : 4.6 : ${_arch_target}-g++
+	:
+	<rc>${_arch_target}-windres
+	<archiver>${_arch_target}-ar
+;
+EOF
+
+	local instprefix="${pkgdir}/usr/${_arch_target}"
+
+	/usr/bin/bjam \
+		toolset=gcc \
+		target-os=windows \
+		variant=release \
+		threading=multi \
+		threadapi=win32 \
+                boost.locale.icu=off \
+		link=shared,static \
+		runtime-link=shared \
+		--prefix="$instprefix" \
+		--user-config=user-config.jam \
+		--without-mpi \
+		--without-python \
+                --without-context \
+                --without-coroutine \
+                --without-graph \
+		${MAKEFLAGS} \
+		--layout=tagged install
+
+	# --layout=tagged will add the "-mt" suffix for multithreaded libraries
+	# and installs includes in /usr/include/boost.
+	# --layout=system no longer adds the -mt suffix for multi-threaded libs.
+
+	# Move all the .dll files into bin/
+	install -m755 -d "$instprefix/bin"
+	mv "$instprefix/lib/"*.dll "$instprefix/bin"
+
+#  find ${pkgdir}/usr/i486-mingw32 -name *.a | xargs i486-mingw32-ranlib
+${_arch_target}-strip -x "$instprefix/bin/"*.dll
+${_arch_target}-strip -g "$instprefix/lib/"*.a
+}
+md5sums=('15cb8c0803064faef0c4ddf5bc5ca279')

@@ -1,0 +1,35 @@
+# Maintainer: naelstrof <naelstrof@gmail.com>
+
+pkgname=mingw-w64-openal
+pkgver=1.15.1
+pkgrel=4
+pkgdesc="OpenAL audio library for use with opengl (mingw-w64)"
+arch=(any)
+url="http://connect.creativelabs.com/openal/"
+license=('GPL2')
+depends=('mingw-w64-crt')
+makedepends=('mingw-w64-gcc' 'mingw-w64-cmake')
+options=(!strip !buildflags)
+source=(http://kcat.strangesoft.net/openal-releases/openal-soft-$pkgver.tar.bz2)
+md5sums=('ea83dec3b9655a27d28e7bc7cae9cd71')
+
+_architectures="i686-w64-mingw32 x86_64-w64-mingw32"
+build() {
+  unset LDFLAGS
+
+  for _arch in ${_architectures}; do
+      mkdir -p ${srcdir}/build-${_arch} && cd ${srcdir}/build-${_arch}
+      ${_arch}-cmake -DEXAMPLES=OFF \
+                     ../openal-soft-${pkgver}
+      make
+  done
+}
+
+package() {
+  for _arch in ${_architectures}; do
+      cd ${srcdir}/build-${_arch}
+      make DESTDIR=${pkgdir} install
+      ${_arch}-strip --strip-unneeded "$pkgdir"/usr/${_arch}/bin/*.dll
+      ${_arch}-strip -g "$pkgdir"/usr/${_arch}/lib/*.a
+  done
+}
