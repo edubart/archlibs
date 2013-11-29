@@ -1,6 +1,6 @@
 # Maintainer: edubart <edub4rt@gmail.com>
 pkgname=mingw-w64-chipmunk
-pkgver=6.2.0
+pkgver=6.2.1
 pkgrel=2
 pkgdesc="A high-performance 2D rigid body physics library"
 arch=(any)
@@ -10,7 +10,6 @@ depends=('mingw-w64-crt')
 makedepends=('mingw-w64-gcc' 'mingw-w64-cmake')
 options=(!strip !buildflags staticlibs)
 source=(http://files.slembcke.net/chipmunk/release/Chipmunk-${pkgver%%.*}.x/Chipmunk-$pkgver.tgz)
-md5sums=('42c63539976b84f5f643fc0acb1b7127')
 
 _architectures="i686-w64-mingw32 x86_64-w64-mingw32"
 
@@ -34,3 +33,4 @@ package() {
       ${_arch}-strip -g "$pkgdir"/usr/${_arch}/lib/*.a
   done
 }
+md5sums=('1cc6ff6a1f1cfcc6e167841fb24bf3c6')

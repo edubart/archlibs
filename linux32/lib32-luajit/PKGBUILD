@@ -16,7 +16,7 @@ build() {
     export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
 
     cd $srcdir/LuaJIT-$pkgver
-    make PREFIX=/usr
+    make amalg PREFIX=/usr
 }
 
 package() {
