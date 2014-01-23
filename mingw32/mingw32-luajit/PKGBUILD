@@ -1,5 +1,5 @@
 pkgname=mingw32-luajit
-pkgver=2.0.0
+pkgver=2.0.2
 pkgrel=1
 pkgdesc='A Just-In-Time Compiler for Lua (mingw32)'
 arch=('any')
@@ -9,7 +9,7 @@ depends=('mingw32-runtime')
 makedepends=('mingw32-gcc' 'mingw32-w32api')
 source=(http://luajit.org/download/LuaJIT-${pkgver}.tar.gz)
 options=(!strip !makeflags)
-md5sums=('97a2b87cc0490784f54b64cfb3b8f5ad')
+md5sums=('112dfb82548b03377fbefbba2e0e3a5b')
 
 build() {
     mkdir -p $pkgdir/usr/i486-mingw32/bin
@@ -17,13 +17,13 @@ build() {
     mkdir -p $pkgdir/usr/i486-mingw32/include/luajit-2.0/
     cd $srcdir/LuaJIT-${pkgver}/src
     sed -i 's/^BUILDMODE= [a-z]*$/BUILDMODE= dynamic/' Makefile
-    make PREFIX=/usr/i486-mingw32 HOST_CC="gcc -m32" CROSS=i486-mingw32- TARGET_SYS=Windows
+    make PREFIX=/usr/i486-mingw32 HOST_CC="gcc -m32" CROSS=i486-mingw32- TARGET_SYS=Windows amalg
     cp {lauxlib.h,lua.h,lua.hpp,luaconf.h,luajit.h,lualib.h} $pkgdir/usr/i486-mingw32/include/luajit-2.0/
     cp lua51.dll $pkgdir/usr/i486-mingw32/bin/luajit51.dll
     make clean
 
     sed -i 's/^BUILDMODE= [a-z]*$/BUILDMODE= static/' Makefile
-    make PREFIX=/usr/i486-mingw32 HOST_CC="gcc -m32" CROSS=i486-mingw32- TARGET_SYS=Windows
+    make PREFIX=/usr/i486-mingw32 HOST_CC="gcc -m32" CROSS=i486-mingw32- TARGET_SYS=Windows amalg
     cp libluajit.a $pkgdir/usr/i486-mingw32/lib/
     cp luajit.exe $pkgdir/usr/i486-mingw32/bin/
     make clean

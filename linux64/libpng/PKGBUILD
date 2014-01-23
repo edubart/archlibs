@@ -7,16 +7,15 @@
 pkgname=libpng
 pkgver=1.6.7
 _apngver=1.6.7
-pkgrel=1
+pkgrel=9
 pkgdesc="A collection of routines used to create PNG format graphics files"
 arch=('i686' 'x86_64')
 url="http://www.libpng.org/pub/png/libpng.html"
 license=('custom')
 depends=('zlib' 'sh')
-source=(http://downloads.sourceforge.net/sourceforge/$pkgname/$pkgname-$pkgver.tar.xz{,.asc}
+source=(http://downloads.sourceforge.net/sourceforge/$pkgname/$pkgname-$pkgver.tar.xz
         http://downloads.sourceforge.net/sourceforge/libpng-apng/libpng-$_apngver-apng.patch.gz)
 md5sums=('7023a9eacd7b6a3eb95761a2f574d456'
-         'SKIP'
          'aad92ea0cc3e29415b90c78f1d267799')
 
 prepare() {
@@ -30,8 +29,8 @@ prepare() {
 build() {
   cd $pkgname-$pkgver
 
-#  ./configure --prefix=/usr --disable-static
- # make
+  ./configure --prefix=/usr
+  make
 }
 
 package() {
