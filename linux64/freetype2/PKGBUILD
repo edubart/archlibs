@@ -1,28 +1,37 @@
-# $Id: PKGBUILD 201340 2013-12-09 07:41:57Z heftig $
+# $Id: PKGBUILD 208094 2014-03-17 20:55:35Z andyrtr $
 # Maintainer: Jan de Groot <jgc@archlinux.org>
 
 pkgname=freetype2
-pkgver=2.5.2
+pkgver=2.5.3
 pkgrel=9
 pkgdesc="TrueType font rendering library"
 arch=(i686 x86_64)
 license=('GPL')
 url="http://freetype.sourceforge.net"
-depends=('zlib' 'bzip2' 'sh' 'libpng')
-source=(http://downloads.sourceforge.net/sourceforge/freetype/freetype-${pkgver}.tar.bz2
+# adding harfbuzz for improved OpenType features auto-hinting 
+# introduces a cycle dep to harfbuzz depending on freetype wanted by upstream
+depends=('zlib' 'bzip2' 'sh' 'libpng' 'harfbuzz')
+source=(http://downloads.sourceforge.net/sourceforge/freetype/freetype-${pkgver}.tar.bz2{,.sig}
         freetype-2.2.1-enable-valid.patch
         freetype-2.5.1-enable-spr.patch
-        freetype-2.5.1-enable-sph.patch)
-md5sums=('10e8f4d6a019b124088d18bc26123a25'
-         '214119610444c9b02766ccee5e220680'
-         '80a14cce234f3f190cd936ca9060c398'
-         '0636ba2ff074201e2ea5c47ac408bc63')
+        freetype-2.5.1-enable-sph.patch
+        fix_segfault_with_harfbuzz.diff)
+sha1sums=('d3c26cc17ec7fe6c36f4efc02ef92ab6aa3f4b46'
+          'SKIP'
+          'f279d922a873d62a8af50bfc873051839d194dca'
+          '13ee8d558593db991ad29fa090b461f914536104'
+          'c31fa3d342ead56f3acfa1f267b474a7686d0014'
+          'c99013b4c19494cd26031878368191cd2b4459b0')
 
 prepare() {
   cd "${srcdir}/freetype-${pkgver}"
   patch -Np1 -i "${srcdir}/freetype-2.2.1-enable-valid.patch"
   patch -Np1 -i "${srcdir}/freetype-2.5.1-enable-spr.patch"
-
+  
+  # fix segfaults # https://bugs.archlinux.org/task/39365
+  # http://git.savannah.gnu.org/cgit/freetype/freetype2.git/commit/?id=23367ff97f33ef6a2b7e1fced1157c87a46d9596
+  patch -Np1 -i "${srcdir}/fix_segfault_with_harfbuzz.diff"
+  
   # Disabled for now due to resistance
   # Kept here for easier rebuilds via ABS
   # https://bugs.archlinux.org/task/35274
@@ -31,9 +40,7 @@ prepare() {
 
 build() {
   cd "${srcdir}/freetype-${pkgver}"
-
   ./configure --prefix=/usr
-
   make
 }
 

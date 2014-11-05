@@ -14,15 +14,18 @@ license=('MIT')
 options=('!makeflags' '!emptydirs' '!strip')
 source=("http://www.lua.org/ftp/lua-$pkgver.tar.gz"
         'lua-arch.patch'
-        'lua-5.1-cflags.diff')
+        'lua-5.1-cflags.diff'
+        'archindependent-bytecode.patch')
 md5sums=('2e115fe26e435e33b0d5c022e4490567'
          'fa25feb70ef9fec975b1c20da5098b3c'
-         '249582bf1fd861ccf492d2c35a9fe732')
+         '249582bf1fd861ccf492d2c35a9fe732'
+         '358a9c80ee8445f029a81e8a8ea6864e')
 
 build() {
     cd lua-$pkgver
     patch -p1 -i "$srcdir/lua-arch.patch"
     patch -p1 -i "$srcdir/lua-5.1-cflags.diff"
+    patch -p1 -i "$srcdir/archindependent-bytecode.patch"
     [[ $CARCH == x86_64 ]] && export CFLAGS="$CFLAGS -fPIC"
     sed -e 's:llua:llua5.1:' -e 's:/include:/include/lua5.1:' -i etc/lua.pc
     sed -r -e '/^LUA_(SO|A|T)=/ s/lua/lua5.1/' -e '/^LUAC_T=/ s/luac/luac5.1/' -i src/Makefile

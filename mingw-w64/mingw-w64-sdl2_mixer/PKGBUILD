@@ -32,6 +32,7 @@ build() {
       --host=${_arch} \
       --disable-sdltest \
       --disable-smpegtest \
+      --disable-music-ogg-shared \
       --with-smpeg-prefix=/usr/${_arch}
     make
   done

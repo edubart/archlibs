@@ -5,8 +5,8 @@
 # Contributor: Douglas Soares de Andrade <douglas@archlinux.org>
 
 pkgname=libpng
-pkgver=1.6.7
-_apngver=1.6.7
+pkgver=1.6.10
+_apngver=1.6.10
 pkgrel=9
 pkgdesc="A collection of routines used to create PNG format graphics files"
 arch=('i686' 'x86_64')
@@ -15,8 +15,6 @@ license=('custom')
 depends=('zlib' 'sh')
 source=(http://downloads.sourceforge.net/sourceforge/$pkgname/$pkgname-$pkgver.tar.xz
         http://downloads.sourceforge.net/sourceforge/libpng-apng/libpng-$_apngver-apng.patch.gz)
-md5sums=('7023a9eacd7b6a3eb95761a2f574d456'
-         'aad92ea0cc3e29415b90c78f1d267799')
 
 prepare() {
   cd $pkgname-$pkgver
@@ -42,3 +40,5 @@ package() {
   install -m755 png2pnm pnm2png "$pkgdir/usr/bin/"
   install -D -m644 ../../LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
+md5sums=('5f414b20f683b1d96b163c89e3eff768'
+         '3404257f66d4a118b26ccc3fc4788810')
